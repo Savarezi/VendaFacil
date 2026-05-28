@@ -1,0 +1,6 @@
+{
+  "name": "VendaFácil",
+  "description": "Um protótipo de sistema ERP completo e moderno para pequenos e médios comércios, com telas administrativas de vendas, cadastros, fluxo financeiro e relatórios.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
