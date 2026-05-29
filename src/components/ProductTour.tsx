@@ -1,314 +1,350 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  ChevronRight, 
-  ChevronLeft, 
-  X, 
-  Sparkles, 
-  HelpCircle, 
-  Play, 
-  CheckCircle2 
-} from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, Play } from 'lucide-react';
 
-interface TourStep {
-  id: string; // matches application activeTab ID
+export interface TourStep {
+  id: string; // Corresponds to the activeTab
   title: string;
+  description: string;
   emoji: string;
-  text: string;
-}
-
-interface ProductTourProps {
-  activeTab: string;
-  setActiveTab: (tabId: string) => void;
-  onClose?: () => void;
 }
 
 export const TOUR_STEPS: TourStep[] = [
   {
     id: 'pdv',
-    title: 'Frente de Caixa (PDV)',
-    emoji: '🛒',
-    text: 'Seja muito bem-vindo! 🌟 Este é o coração das suas vendas diárias. Aqui, o operador registra os produtos de forma rápida, gerencia o carrinho em tempo real e fecha as vendas na hora. Tudo projetado para ser ágil, intuitivo e livre de complicações! ⚡'
+    title: 'PDV (Frente Caixa)',
+    description: 'Esta é a tela principal de vendas e pagamentos.',
+    emoji: '🛒'
   },
   {
     id: 'produtos',
-    title: 'Cadastro de Produtos & Estoque',
-    emoji: '📦',
-    text: 'Seu catálogo completo de mercadorias! 🔍 Aqui você gerencia códigos de barras (EAN), ajusta preços de custo e de venda, e acompanha as quantidades físicas de estoque para nunca ficar desabastecido. O estoque agora exibe uma lista otimizada para poupar espaço! 📈'
+    title: 'Produtos',
+    description: 'Área para cadastro e controle de produtos.',
+    emoji: '📦'
   },
   {
     id: 'clientes',
-    title: 'Gestão e Fidelização de Clientes',
-    emoji: '👥',
-    text: 'Seus clientes são o seu maior patrimônio! ❤️ Nesta aba, você cadastra novos perfis, salva contatos essenciais e acompanha o histórico detalhado de compras. Perfeito para estreitar o relacionamento e fidelizar seus compradores recorrentes! 🤝'
+    title: 'Clientes',
+    description: 'Gerencie os clientes cadastrados.',
+    emoji: '👥'
   },
   {
     id: 'fornecedores',
-    title: 'Controle de Fornecedores',
-    emoji: '🚚',
-    text: 'Mantenha seus parceiros comerciais organizados! 🏗️ Cadastre e gerencie os contatos das distribuidoras e marcas que abastecem sua loja. Facilita o contato rápido no momento de renegociar contratos ou repor mercadorias essenciais. 🤝'
+    title: 'Fornecedores',
+    description: 'Controle empresas fornecedoras.',
+    emoji: '🚚'
   },
   {
     id: 'compras',
-    title: 'Compras & Entrada de Estoque',
-    emoji: '📥',
-    text: 'Sempre que novas mercadorias chegarem, registre aqui! 🧾 A entrada de notas de compra alimenta as quantidades físicas do seu estoque automaticamente e recalcula seus custos operacionais médios. Organização total no mesmo fluxo! 🔄'
+    title: 'Compras & Entradas',
+    description: 'Registre compras e entrada de estoque.',
+    emoji: '🛍️'
   },
   {
     id: 'historico',
-    title: 'Histórico de Vendas Realizadas',
-    emoji: '⏳',
-    text: 'Sua máquina do tempo comercial! 🔍 Consulte todos os cupons fiscais fechados, realize buscas por período ou operador, efetue cancelamentos de transações com facilidade e re-imprima comprovantes salvos em um instante. Controle completo e seguro! 🧾'
+    title: 'Histórico Vendas',
+    description: 'Consulte vendas realizadas.',
+    emoji: '📜'
   },
   {
     id: 'fluxocaixa',
-    title: 'Fluxo de Caixa Diário',
-    emoji: '💸',
-    text: 'A saúde do seu dinheiro em tempo real! 📊 Acompanhe as receitas das vendas presenciais e registre retiradas emergenciais de dinheiro ou pequenas despesas extras (sangrias e suprimentos). Mantenha as rédeas financeiras do dia com precisão operacional! 💰'
+    title: 'Fluxo de Caixa',
+    description: 'Acompanhe movimentações financeiras.',
+    emoji: '🔄'
   },
   {
     id: 'contaspagar',
-    title: 'Contas a Pagar & Despesas',
-    emoji: '📉',
-    text: 'Evite multas e tenha previsibilidade financeira! 🗓️ Organize todas as obrigações fiscais e comerciais da empresa (como aluguel, fornecedores e contas de consumo). Monitore as datas de vencimento em formato intuitivo e evite surpresas! 🚦'
+    title: 'Contas a Pagar',
+    description: 'Controle despesas e vencimentos.',
+    emoji: '📉'
   },
   {
     id: 'contasreceber',
-    title: 'Contas a Receber & Parcelamentos',
-    emoji: '📈',
-    text: 'Controle o faturamento futuro das suas vendas presenciais! 🏦 Monitore em detalhes as vendas feitas a prazo, cheques ou parcelamentos pendentes dos clientes, gerencie datas de crédito e reduza problemas de inadimplência corporativa com total visibilidade! 💰'
+    title: 'Contas a Receber',
+    description: 'Gerencie recebimentos pendentes.',
+    emoji: '📈'
   },
   {
     id: 'relatorios',
-    title: 'Relatórios Inteligentes & BI',
-    emoji: '📊',
-    text: 'Sua central de inteligência empresarial! 🧠 Visualize gráficos modernos de faturamento, vendas consolidadas, produtos mais vendidos da semana, estatísticas de ticket médio e o desempenho da equipe para tomar as melhores decisões de mercado! 🚀'
+    title: 'Relatórios & BI',
+    description: 'Visualize gráficos e indicadores.',
+    emoji: '📊'
   }
 ];
 
+interface ProductTourProps {
+  activeTab: string;
+  setActiveTab: (tabId: string) => void;
+  onClose: () => void;
+}
+
 export default function ProductTour({ activeTab, setActiveTab, onClose }: ProductTourProps) {
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [coords, setCoords] = useState<{ 
-    top: number; 
-    left: number; 
-    position: 'absolute' | 'fixed';
-    pointerOffset?: number;
-    showPointer?: boolean;
-  }>({ top: 0, left: 0, position: 'fixed', pointerOffset: 0, showPointer: false });
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [maskRect, setMaskRect] = useState<DOMRect | null>(null);
+  const [tooltipPos, setTooltipPos] = useState({ top: 0, left: 0, arrowLeft: 0, position: 'above' });
   const tooltipRef = useRef<HTMLDivElement>(null);
 
-  // Load first steps according to current main active tab to stay synced
+  // Synchronize dynamic screen state of active ERP tab with current tutorial step index
   useEffect(() => {
-    const matchedIndex = TOUR_STEPS.findIndex(step => step.id === activeTab);
-    if (matchedIndex !== -1 && matchedIndex !== currentStepIndex) {
-      setCurrentStepIndex(matchedIndex);
+    const step = TOUR_STEPS[currentIndex];
+    if (step && activeTab !== step.id) {
+      setActiveTab(step.id);
     }
-  }, [activeTab]);
+  }, [currentIndex, activeTab, setActiveTab]);
 
-  // Handle position bounding to current active navigation ID
-  useEffect(() => {
-    const updatePosition = () => {
-      const activeStep = TOUR_STEPS[currentStepIndex];
-      const elementId = `tour-tab-${activeStep.id}`;
-      const targetElement = document.getElementById(elementId);
+  // Calculate high-fidelity highlight cutout and tooltip alignment coordinates
+  const updateHighlightCoords = () => {
+    const step = TOUR_STEPS[currentIndex];
+    if (!step) return;
 
-      if (targetElement) {
-        const rect = targetElement.getBoundingClientRect();
+    const element = document.getElementById(`tour-tab-${step.id}`);
+    if (element) {
+      // Ensure element is perfectly central in scrollable viewports
+      element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      
+      // Let's defer measurement to allow layout/scrolling adjustments to settle
+      setTimeout(() => {
+        const rect = element.getBoundingClientRect();
+        setMaskRect(rect);
+
+        // Responsive alignment calculations for the overlay panel
+        const tooltipWidth = tooltipRef.current ? tooltipRef.current.offsetWidth : 380;
+        const tooltipHeight = tooltipRef.current ? tooltipRef.current.offsetHeight : 180;
         const screenWidth = window.innerWidth;
-        const isMobile = screenWidth < 768;
+        const screenHeight = window.innerHeight;
 
-        if (isMobile) {
-          // On small screens, keep it nice and centered at the bottom of the viewport
-          setCoords({
-            top: window.innerHeight - 240,
-            left: screenWidth / 2,
-            position: 'fixed',
-            pointerOffset: 0,
-            showPointer: false
-          });
-          // Ensure the tab itself is visible by scrolling horizontally
-          targetElement.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-        } else {
-          // Centered below the horizontal nav tab button - ALWAYS using viewport-relative fixed positioning
-          const originalLeft = rect.left + (rect.width / 2);
-          const tooltipWidth = Math.min(480, screenWidth - 32);
-          const halfWidth = tooltipWidth / 2;
-          const padding = 16;
+        // Positioning: menu header is usually at top. So tooltip goes underneath the cutout
+        let idealTop = rect.bottom + 12;
+        let position = 'below';
 
-          // Clamp coordinates to keep the tooltip fully inside the viewport horizontally
-          const minLeft = halfWidth + padding;
-          const maxLeft = screenWidth - halfWidth - padding;
-          const clampedLeft = Math.max(minLeft, Math.min(maxLeft, originalLeft));
-
-          // Calculate offset to move the pointer so it still aligns with the target element
-          const rawOffset = originalLeft - clampedLeft;
-          // Limit the shift of the pointer so it does not slide off the tooltip edges
-          const maxPointerShift = halfWidth - 28;
-          const pointerOffset = Math.max(-maxPointerShift, Math.min(maxPointerShift, rawOffset));
-
-          setCoords({
-            top: rect.bottom + 12,
-            left: clampedLeft,
-            position: 'fixed',
-            pointerOffset,
-            showPointer: true
-          });
+        // Fallback to above/center if cramped underneath
+        if (idealTop + tooltipHeight > screenHeight - 20) {
+          idealTop = Math.max(16, rect.top - tooltipHeight - 12);
+          position = 'above';
         }
-      } else {
-        // Safe screen-center fallback
-        setCoords({
-          top: window.innerHeight / 2 - 100,
-          left: window.innerWidth / 2,
-          position: 'fixed',
-          pointerOffset: 0,
-          showPointer: false
-        });
-      }
-    };
 
-    // Delay calculation slightly to allow React DOM update/active tab changes rendering time
-    const timer = setTimeout(updatePosition, 100);
-    window.addEventListener('resize', updatePosition);
+        // Horizontal alignment math with screen boundary safety constraint padding
+        let idealLeft = rect.left + (rect.width / 2) - (tooltipWidth / 2);
+        
+        // Prevent sticking past screen sides
+        const minLeft = 12;
+        const maxLeft = screenWidth - tooltipWidth - 12;
+        idealLeft = Math.max(minLeft, Math.min(maxLeft, idealLeft));
+
+        // Arrow pointer needs to align exactly on center of the highlighted menu item
+        const arrowLeft = rect.left + (rect.width / 2) - idealLeft;
+
+        setTooltipPos({
+          top: idealTop,
+          left: idealLeft,
+          arrowLeft: arrowLeft,
+          position: position
+        });
+      }, 100);
+    } else {
+      // If the target menu is not resolved on screen, center the modal on canvas
+      const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
+      const tWidth = tooltipRef.current ? tooltipRef.current.offsetWidth : 380;
+      const tHeight = tooltipRef.current ? tooltipRef.current.offsetHeight : 180;
+      
+      setMaskRect(null);
+      setTooltipPos({
+        top: (screenHeight - tHeight) / 2,
+        left: (screenWidth - tWidth) / 2,
+        arrowLeft: tWidth / 2,
+        position: 'center'
+      });
+    }
+  };
+
+  useEffect(() => {
+    updateHighlightCoords();
+    // Add event listeners for responsive updates
+    window.addEventListener('resize', updateHighlightCoords);
+    window.addEventListener('scroll', updateHighlightCoords);
     return () => {
-      clearTimeout(timer);
-      window.removeEventListener('resize', updatePosition);
+      window.removeEventListener('resize', updateHighlightCoords);
+      window.removeEventListener('scroll', updateHighlightCoords);
     };
-  }, [currentStepIndex]);
+  }, [currentIndex]);
 
   const handleNext = () => {
-    if (currentStepIndex < TOUR_STEPS.length - 1) {
-      const nextIndex = currentStepIndex + 1;
-      setCurrentStepIndex(nextIndex);
-      setActiveTab(TOUR_STEPS[nextIndex].id);
+    if (currentIndex < TOUR_STEPS.length - 1) {
+      setCurrentIndex(currentIndex + 1);
     } else {
-      handleComplete();
+      onClose();
     }
   };
 
   const handlePrev = () => {
-    if (currentStepIndex > 0) {
-      const prevIndex = currentStepIndex - 1;
-      setCurrentStepIndex(prevIndex);
-      setActiveTab(TOUR_STEPS[prevIndex].id);
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
     }
   };
 
-  const handleComplete = () => {
-    localStorage.setItem('vendafacil_product_tour_completed', 'true');
-    if (onClose) onClose();
+  const handleSkip = () => {
+    onClose();
   };
 
-  const currentStep = TOUR_STEPS[currentStepIndex];
+  const step = TOUR_STEPS[currentIndex];
 
   return (
-    <div className="fixed inset-0 z-50 pointer-events-none" id="product_tour_wrapper">
-      {/* Dimmed backdrop background (pointer events none on body except relative elements) */}
-      <div className="absolute inset-0 bg-slate-950/30 backdrop-blur-[0.5px] pointer-events-auto cursor-pointer" onClick={handleComplete} />
+    <div className="fixed inset-0 z-50 pointer-events-none" id="tour-system-container">
+      {/* Dynamic SVG Dark Mask Overlay with Highlight Window Cutout */}
+      <svg className="absolute inset-0 w-full h-full pointer-events-auto" style={{ mixBlendMode: 'multiply' }}>
+        <defs>
+          <mask id="tour-cutout-mask">
+            {/* Opaque white leaves the dark overlay */}
+            <rect x="0" y="0" width="100%" height="100%" fill="white" />
+            
+            {/* Transparent black cutout exposes the header item underneath */}
+            {maskRect && (
+              <rect
+                x={maskRect.x - 6}
+                y={maskRect.y - 4}
+                width={maskRect.width + 12}
+                height={maskRect.height + 8}
+                rx="8"
+                fill="black"
+              />
+            )}
+          </mask>
+        </defs>
+        
+        {/* Semi-transparent dark overlay pane */}
+        <rect
+          x="0"
+          y="0"
+          width="100%"
+          height="100%"
+          fill="rgba(15, 23, 42, 0.82)"
+          mask="url(#tour-cutout-mask)"
+        />
+      </svg>
 
-      {/* Floating Animated Tooltip container */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentStepIndex}
-          ref={tooltipRef}
-          initial={{ opacity: 0, scale: 0.92, y: 10 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: -5 }}
-          transition={{ duration: 0.22, ease: 'easeOut' }}
-          className="bg-white text-slate-800 rounded-2xl shadow-[0_15px_50px_-15px_rgba(15,23,42,0.4)] border border-indigo-100 p-5 sm:p-6 w-[92%] sm:w-[480px] pointer-events-auto z-50 origin-top"
+      {/* Pulsing visual halo around the target highlighted active item */}
+      {maskRect && (
+        <div
+          className="absolute border-2 border-amber-400 rounded-lg pointer-events-none animate-pulse z-50"
           style={{
-            position: coords.position,
-            top: coords.top,
-            left: coords.left,
-            transform: 'translateX(-50%)',
+            top: maskRect.top - 6,
+            left: maskRect.x - 8,
+            width: maskRect.width + 16,
+            height: maskRect.height + 12,
+            boxShadow: '0 0 16px rgba(245, 158, 11, 0.65)'
           }}
-          id={`product_tour_step_${currentStep.id}`}
-        >
-          {/* Header */}
-          <div className="flex items-start justify-between gap-4 mb-3.5">
-            <div className="flex items-center gap-2.5">
-              <span className="text-2xl shrink-0" role="img" aria-label={currentStep.title}>
-                {currentStep.emoji}
-              </span>
-              <div>
-                <span className="text-[10px] font-extrabold text-indigo-600 uppercase tracking-widest flex items-center gap-1.5">
-                  <Sparkles size={11} className="animate-pulse" /> Tour Interativo ({currentStepIndex + 1}/{TOUR_STEPS.length})
-                </span>
-                <h3 className="font-extrabold text-slate-900 text-[15px] sm:text-base tracking-tight leading-tight mt-0.5">
-                  {currentStep.title}
-                </h3>
-              </div>
+        />
+      )}
+
+      {/* Floating Interactive Tooltip Dialog Card with Motion Effects */}
+      <div
+        ref={tooltipRef}
+        className="absolute pointer-events-auto z-50 w-[90%] sm:w-[380px] bg-white rounded-2xl shadow-2xl border border-indigo-100 p-5 flex flex-col gap-4"
+        style={{
+          top: tooltipPos.top,
+          left: tooltipPos.left,
+          transition: 'top 0.2s cubic-bezier(0.16, 1, 0.3, 1), left 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+        }}
+      >
+        {/* Dialog Indicator Arrow */}
+        {tooltipPos.position !== 'center' && (
+          <div
+            className={`absolute w-4 h-4 bg-white rotate-45 border-l border-t border-indigo-100 ${
+              tooltipPos.position === 'below' ? '-top-2' : '-bottom-2 border-r border-b border-t-0 border-l-0'
+            }`}
+            style={{
+              left: Math.max(16, Math.min(tooltipPos.arrowLeft - 8, (tooltipRef.current?.offsetWidth || 380) - 24)),
+              transition: 'left 0.2s cubic-bezier(0.16, 1, 0.3, 1)'
+            }}
+          />
+        )}
+
+        {/* Header Block with Skip corner option */}
+        <div className="flex items-start justify-between shrink-0">
+          <div className="flex items-center gap-2.5">
+            <span className="text-2xl mr-1" role="img" aria-label={step.title}>
+              {step.emoji}
+            </span>
+            <div>
+              <p className="text-[10px] text-indigo-650 font-extrabold uppercase tracking-widest">Tutorial ERP</p>
+              <h4 className="font-extrabold text-slate-900 text-sm tracking-tight">{step.title}</h4>
             </div>
-            <button
-              onClick={handleComplete}
-              className="text-slate-400 hover:text-slate-600 p-1 rounded-full hover:bg-slate-50 transition-all cursor-pointer shrink-0"
-              title="Pular e fechar tutorial"
-              id="tour_btn_skip_corner"
-            >
-              <X size={16} />
-            </button>
+          </div>
+          <button
+            onClick={handleSkip}
+            className="p-1 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100/80 transition-all cursor-pointer"
+            title="Pular todo o tour"
+            id="tour_btn_skip_corner"
+          >
+            <X size={15} />
+          </button>
+        </div>
+
+        {/* Informative Text Body */}
+        <div className="bg-slate-50/70 p-3 rounded-xl border border-slate-100 sm:text-sm text-xs leading-relaxed text-slate-650 italic shrink-0">
+          “{step.description}”
+        </div>
+
+        {/* Progress & Actions Footer Section */}
+        <div className="flex items-center justify-between gap-3 border-t border-slate-100 pt-3.5 mt-1 shrink-0">
+          {/* Progress Indicator Dots / Fractional Label */}
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[11px] font-bold text-slate-400">
+              Passo {currentIndex + 1} de {TOUR_STEPS.length}
+            </span>
+            <div className="flex gap-1.5 mt-1">
+              {TOUR_STEPS.map((_, i) => (
+                <div
+                  key={i}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    i === currentIndex ? 'w-5 bg-indigo-600' : 'w-1.5 bg-slate-200'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
 
-          {/* Description Text */}
-          <div className="text-slate-600 text-xs sm:text-[13px] leading-relaxed mb-5 font-normal">
-            <p className="bg-slate-50/80 p-3 rounded-xl border border-slate-100 italic text-slate-650">
-              {currentStep.text}
-            </p>
-          </div>
-
-          {/* Actions / Buttons Footer */}
-          <div className="flex items-center justify-between border-t border-slate-100 pt-4 gap-3 bg-white">
+          {/* Action Row */}
+          <div className="flex items-center gap-2">
+            {/* Skip Option */}
             <button
-              onClick={handleComplete}
-              className="text-slate-500 hover:text-slate-700 font-bold text-xs hover:underline cursor-pointer transition-colors"
+              onClick={handleSkip}
+              className="text-xs text-slate-400 hover:text-slate-600 font-extrabold px-2 py-1.5 hover:underline cursor-pointer"
               id="tour_btn_skip_primary"
             >
-              Pular Introdução
+              Pular
             </button>
 
-            <div className="flex items-center gap-2">
-              {currentStepIndex > 0 && (
-                <button
-                  onClick={handlePrev}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-3xs"
-                  id="tour_btn_prev"
-                >
-                  <ChevronLeft size={14} /> Voltar
-                </button>
-              )}
-
+            {/* Back Arrow Button */}
+            {currentIndex > 0 && (
               <button
-                onClick={handleNext}
-                className="flex items-center gap-1.5 px-4.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-extrabold transition-all cursor-pointer shadow-2xs group"
-                id="tour_btn_next"
+                onClick={handlePrev}
+                className="p-1.5 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700 active:scale-95 transition-all cursor-pointer"
+                title="Voltar"
+                id="tour_btn_prev"
               >
-                {currentStepIndex === TOUR_STEPS.length - 1 ? (
-                  <>
-                    <CheckCircle2 size={13} /> Finalizar Tour
-                  </>
-                ) : (
-                  <>
-                    Avançar <ChevronRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
-                  </>
-                )}
+                <ChevronLeft size={16} />
               </button>
-            </div>
-          </div>
-          
-          {/* Tooltip top triangle pointer (Only showing on non-mobile targets with pointer alignment) */}
-          {coords.showPointer && (
-            <div 
-              className="absolute top-0 -mt-2 -ml-2 w-4 h-4 bg-white border-t border-l border-indigo-100 rotate-45 pointer-events-none" 
-              style={{ left: `calc(50% + ${coords.pointerOffset || 0}px)` }}
-            />
-          )}
+            )}
 
-        </motion.div>
-      </AnimatePresence>
+            {/* Next / Proceed Button */}
+            <button
+              onClick={handleNext}
+              className="flex items-center gap-1 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-extrabold text-xs px-3.5 py-2 rounded-xl transition-all shadow-md shadow-indigo-600/20 cursor-pointer"
+              id="tour_btn_next"
+            >
+              <span>{currentIndex === TOUR_STEPS.length - 1 ? 'Concluir' : 'Próximo'}</span>
+              <ChevronRight size={14} />
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-// Small Help button in header controller
+// Minimal Floating Trigger Launcher Component to re-open the onboarding anytime
 interface TourLauncherProps {
   onStartTour: () => void;
   tourCompleted: boolean;
@@ -316,20 +352,18 @@ interface TourLauncherProps {
 
 export function TourLauncher({ onStartTour, tourCompleted }: TourLauncherProps) {
   return (
-    <motion.button
+    <button
       onClick={onStartTour}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      className={`flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[10px] font-bold tracking-normal uppercase border transition-all cursor-pointer shrink-0 ${
+      className={`relative flex items-center gap-1.5 px-3 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
         !tourCompleted 
-          ? 'bg-indigo-600 text-white border-indigo-500 animate-pulse shadow-xs'
-          : 'bg-slate-900 hover:bg-slate-800 text-slate-350 border-slate-850 hover:text-white'
+          ? 'bg-amber-500 hover:bg-amber-600 text-slate-950 animate-bounce shadow-md shadow-amber-500/25 ring-2 ring-amber-400/50' 
+          : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700/80 hover:text-white'
       }`}
-      title="Iniciar tour guiado pelo sistema"
+      title="Fazer Tour do Sistema"
       id="header_tour_launcher_btn"
     >
-      <Sparkles size={11} className={!tourCompleted ? 'text-amber-300' : 'text-indigo-400'} />
-      <span>{tourCompleted ? 'Dicas do Sistema' : 'Primeiro Acesso? Comece Aqui!'}</span>
-    </motion.button>
+      <Play size={12} className={!tourCompleted ? 'fill-current animate-pulse' : ''} />
+      <span>{!tourCompleted ? 'Descobrir Sistema' : 'Fazer Tour'}</span>
+    </button>
   );
 }

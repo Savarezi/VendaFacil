@@ -67,28 +67,22 @@ function AppContent() {
   const [isTourActive, setIsTourActive] = useState<boolean>(false);
   const [tourCompleted, setTourCompleted] = useState<boolean>(true);
 
+  // Controle individual por e-mail no localStorage
   useEffect(() => {
     if (isAuthenticated && user?.email) {
       try {
-        const completed = localStorage.getItem(`vendafacil_product_tour_completed_${user.email}`) === 'true';
+        const completed = localStorage.getItem(`vendafacil_tour_done_${user.email}`) === 'true';
         setTourCompleted(completed);
-      } catch {
-        setTourCompleted(false);
+        if (!completed) {
+          // Inicia automaticamente apenas no primeiro login deste e-mail
+          setIsTourActive(true);
+          setActiveTab('pdv');
+        }
+      } catch (err) {
+        console.error('Error loading tour completion state:', err);
       }
-    } else if (isAuthenticated && !user) {
-      // Se autenticado mas o usuário ainda está carregando, seguramos o tour
-      setTourCompleted(true);
     }
   }, [isAuthenticated, user?.email]);
-
-  useEffect(() => {
-    if (isAuthenticated && !tourCompleted && user?.email) {
-      const timer = setTimeout(() => {
-        setIsTourActive(true);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [isAuthenticated, tourCompleted, user?.email]);
 
   const handleStartTour = () => {
     setActiveTab('pdv');
@@ -100,9 +94,9 @@ function AppContent() {
     setTourCompleted(true);
     if (user?.email) {
       try {
-        localStorage.setItem(`vendafacil_product_tour_completed_${user.email}`, 'true');
-      } catch (e) {
-        console.error(e);
+        localStorage.setItem(`vendafacil_tour_done_${user.email}`, 'true');
+      } catch (err) {
+        console.error('Error saving tour state:', err);
       }
     }
   };
@@ -197,11 +191,10 @@ function AppContent() {
           </div>
 
           {/* Informações do Operador e LogOut */}
-          <div className="flex items-center gap-3 min-w-0">
-            <TourLauncher 
-              onStartTour={handleStartTour} 
-              tourCompleted={tourCompleted} 
-            />
+          <div className="flex items-center gap-3 min-w-0 shrink-0">
+
+            {/* Botão de Tour do Sistema */}
+            <TourLauncher onStartTour={handleStartTour} tourCompleted={tourCompleted} />
 
             <div className="flex items-center gap-2 text-right min-w-0">
               <div className="truncate text-xs">
@@ -236,7 +229,6 @@ function AppContent() {
             {menuItems.map((item) => {
               const IconComp = item.icon;
               const isActive = activeTab === item.id;
-              const isHighlightedInTour = isTourActive && activeTab === item.id;
               
               return (
                 <button
@@ -247,13 +239,9 @@ function AppContent() {
                     isActive 
                       ? 'bg-indigo-650 text-white shadow-xs' 
                       : 'text-slate-400 hover:text-slate-100 hover:bg-slate-900/50'
-                  } ${
-                    isHighlightedInTour 
-                      ? 'ring-2 ring-amber-500 ring-offset-1 ring-offset-slate-950 scale-[1.02] font-extrabold shadow-[0_0_12px_rgba(245,158,11,0.3)]' 
-                      : ''
                   }`}
                 >
-                  <IconComp size={14} className={`shrink-0 ${isHighlightedInTour ? 'text-amber-400' : ''}`} />
+                  <IconComp size={14} className="shrink-0" />
                   <span>{item.label}</span>
                 </button>
               );
@@ -310,6 +298,7 @@ function AppContent() {
 
       </div>
 
+      {/* Tutorial Guiado */}
       {isTourActive && (
         <ProductTour 
           activeTab={activeTab} 

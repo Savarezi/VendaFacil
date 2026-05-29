@@ -158,6 +158,14 @@ npm run build
 
 ---
 
+## 🗄️ MER / Estrutura do Banco de Dados
+
+Toda a modelagem relacional, diagrama Entidade-Relacionamento (MER) e o de/para das tabelas do banco de dados (Supabase/PostgreSQL) estão detalhadamente documentados e podem ser consultados externamente:
+
+*   🌐 **Documentação Oficial do MER:** [Acesse a Estrutura do Banco de Dados no Google Docs](https://docs.google.com/document/d/1F2H-04nUY4KpHq06rtp3UVjJJVAP3pUOfGpuFwMZP0A/edit?usp=sharing)
+
+---
+
 ## 🛡️ Segurança e Conformidade
 
 A engenharia por trás do **VendaFácil ERP** protege a sua operação contra as falhas mais comuns de segurança corporativa:
@@ -174,7 +182,7 @@ Este projeto foi desenhado, polido e implementado com foco absoluto em código l
 Desenvolvido por **Patrícia Savarezi**.
 
 *   🌐 **LinkedIn:** [Acesse meu perfil profissional](https://www.linkedin.com/in/savarezi/)
-*   💼 **Portfólio & Soluções:** Entre em contato para saber mais sobre arquitetura SaaS e soluções de alto impacto comercial.
+*   💼 **Portfólio:** [Visite meu Portfólio de Soluções](https://patricia-oliveira-portfolio.vercel.app/)
 
 ---
 *VendaFácil ERP — Elevando a gestão comercial para o próximo nível técnico.*
