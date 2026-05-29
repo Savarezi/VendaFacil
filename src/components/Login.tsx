@@ -220,7 +220,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
   };
 
   return (
-    <div className="h-screen w-full bg-[#020512] flex flex-col lg:flex-row font-sans text-slate-100 selection:bg-indigo-500/30 selection:text-white relative overflow-hidden antialiased">
+    <div className="min-h-screen lg:h-screen w-full bg-[#020512] flex flex-col-reverse lg:flex-row font-sans text-slate-100 selection:bg-indigo-500/30 selection:text-white relative lg:overflow-hidden antialiased">
       
       {/* Luz radial de alta profundidade visual */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
@@ -233,7 +233,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
       </div>
 
       {/* LADO ESQUERDO: Branding, Headlines e Módulos do ERP */}
-      <div className="w-full lg:w-3/5 xl:w-[62%] h-full flex flex-col justify-between p-4 sm:p-6 lg:p-8 xl:p-10 z-10 overflow-hidden relative">
+      <div className="w-full lg:w-3/5 xl:w-[62%] min-h-fit lg:h-full flex flex-col justify-between p-4 sm:p-6 lg:p-8 xl:p-10 z-10 overflow-visible lg:overflow-hidden relative">
         
         {/* Top Header */}
         <div className="flex items-center justify-between">
@@ -327,7 +327,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
       </div>
 
       {/* LADO DIREITO: Painel de Login de Alta Fidelidade */}
-      <div className="w-full lg:w-2/5 xl:w-[38%] h-full flex flex-col justify-between p-4 sm:p-6 lg:p-8 xl:p-10 z-10 bg-[#04060f]/95 border-t lg:border-t-0 lg:border-l border-slate-900/60 relative overflow-hidden">
+      <div className="w-full lg:w-2/5 xl:w-[38%] min-h-fit lg:h-full flex flex-col justify-between p-4 sm:p-6 lg:p-8 xl:p-10 z-10 bg-[#04060f]/95 border-b lg:border-b-0 lg:border-t-0 lg:border-l border-slate-900/60 relative overflow-visible lg:overflow-hidden">
         
         {/* Glow de iluminação de fundo */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full bg-indigo-500/5 blur-[100px] pointer-events-none" />

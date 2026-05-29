@@ -198,10 +198,10 @@ function AppContent() {
 
             <div className="flex items-center gap-2 text-right min-w-0">
               <div className="truncate text-xs">
-                <p className="font-bold text-white truncate max-w-[120px] sm:max-w-[180px]">
+                <p className="font-bold text-white truncate max-w-[75px] sm:max-w-[185px]">
                   {user?.name || 'Operador'}
                 </p>
-                <p className="text-slate-400 text-[10px] truncate max-w-[120px] sm:max-w-[180px]">
+                <p className="text-slate-400 text-[10px] truncate max-w-[120px] sm:max-w-[180px] hidden sm:block">
                   {user?.email || 'operador@empresa.com'}
                 </p>
               </div>
@@ -292,7 +292,7 @@ function AppContent() {
         )}
 
         {/* Visualização de módulos */}
-        <main className="flex-1 p-6 md:p-8 overflow-y-auto block max-w-7xl mx-auto w-full">
+        <main className="flex-1 p-3.5 sm:p-5 md:p-8 overflow-y-auto block max-w-7xl mx-auto w-full">
           {renderActiveScreen()}
         </main>
 

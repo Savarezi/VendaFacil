@@ -354,7 +354,7 @@ export function TourLauncher({ onStartTour, tourCompleted }: TourLauncherProps) 
   return (
     <button
       onClick={onStartTour}
-      className={`relative flex items-center gap-1.5 px-3 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+      className={`relative flex items-center gap-1 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
         !tourCompleted 
           ? 'bg-amber-500 hover:bg-amber-600 text-slate-950 animate-bounce shadow-md shadow-amber-500/25 ring-2 ring-amber-400/50' 
           : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700/80 hover:text-white'
@@ -362,8 +362,11 @@ export function TourLauncher({ onStartTour, tourCompleted }: TourLauncherProps) 
       title="Fazer Tour do Sistema"
       id="header_tour_launcher_btn"
     >
-      <Play size={12} className={!tourCompleted ? 'fill-current animate-pulse' : ''} />
-      <span>{!tourCompleted ? 'Descobrir Sistema' : 'Fazer Tour'}</span>
+      <Play size={11} className={`shrink-0 ${!tourCompleted ? 'fill-current animate-pulse' : ''}`} />
+      <span className="text-[11px] sm:text-xs">
+        <span className="hidden sm:inline">{!tourCompleted ? 'Descobrir Sistema' : 'Fazer Tour'}</span>
+        <span className="inline sm:hidden">Tour</span>
+      </span>
     </button>
   );
 }
