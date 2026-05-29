@@ -76,7 +76,7 @@ export const TOUR_STEPS: TourStep[] = [
     id: 'contasreceber',
     title: 'Contas a Receber & Parcelamentos',
     emoji: '📈',
-    text: 'Controle o faturamento futuro das suas vendas presenciais! 🏦 Monitore em detalhes as vendas feitas a prazo, cheques ou parcelamentos pendentes dos clientes, gerencie datas de crédito e reduza problemas de inadimplência corporativa com total visibilidade! 🪙'
+    text: 'Controle o faturamento futuro das suas vendas presenciais! 🏦 Monitore em detalhes as vendas feitas a prazo, cheques ou parcelamentos pendentes dos clientes, gerencie datas de crédito e reduza problemas de inadimplência corporativa com total visibilidade! 💰'
   },
   {
     id: 'relatorios',
@@ -93,7 +93,8 @@ export default function ProductTour({ activeTab, setActiveTab, onClose }: Produc
     left: number; 
     position: 'absolute' | 'fixed';
     pointerOffset?: number;
-  }>({ top: 0, left: 0, position: 'fixed', pointerOffset: 0 });
+    showPointer?: boolean;
+  }>({ top: 0, left: 0, position: 'fixed', pointerOffset: 0, showPointer: false });
   const tooltipRef = useRef<HTMLDivElement>(null);
 
   // Load first steps according to current main active tab to stay synced
@@ -122,20 +123,21 @@ export default function ProductTour({ activeTab, setActiveTab, onClose }: Produc
             top: window.innerHeight - 240,
             left: screenWidth / 2,
             position: 'fixed',
-            pointerOffset: 0
+            pointerOffset: 0,
+            showPointer: false
           });
           // Ensure the tab itself is visible by scrolling horizontally
           targetElement.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         } else {
-          // Centered below the horizontal nav tab button
-          const originalLeft = rect.left + (rect.width / 2) + window.scrollX;
-          const tooltipWidth = 480;
+          // Centered below the horizontal nav tab button - ALWAYS using viewport-relative fixed positioning
+          const originalLeft = rect.left + (rect.width / 2);
+          const tooltipWidth = Math.min(480, screenWidth - 32);
           const halfWidth = tooltipWidth / 2;
           const padding = 16;
 
           // Clamp coordinates to keep the tooltip fully inside the viewport horizontally
-          const minLeft = halfWidth + padding + window.scrollX;
-          const maxLeft = window.innerWidth - halfWidth - padding + window.scrollX;
+          const minLeft = halfWidth + padding;
+          const maxLeft = screenWidth - halfWidth - padding;
           const clampedLeft = Math.max(minLeft, Math.min(maxLeft, originalLeft));
 
           // Calculate offset to move the pointer so it still aligns with the target element
@@ -145,10 +147,11 @@ export default function ProductTour({ activeTab, setActiveTab, onClose }: Produc
           const pointerOffset = Math.max(-maxPointerShift, Math.min(maxPointerShift, rawOffset));
 
           setCoords({
-            top: rect.bottom + window.scrollY + 12,
+            top: rect.bottom + 12,
             left: clampedLeft,
-            position: 'absolute',
-            pointerOffset
+            position: 'fixed',
+            pointerOffset,
+            showPointer: true
           });
         }
       } else {
@@ -157,7 +160,8 @@ export default function ProductTour({ activeTab, setActiveTab, onClose }: Produc
           top: window.innerHeight / 2 - 100,
           left: window.innerWidth / 2,
           position: 'fixed',
-          pointerOffset: 0
+          pointerOffset: 0,
+          showPointer: false
         });
       }
     };
@@ -290,8 +294,8 @@ export default function ProductTour({ activeTab, setActiveTab, onClose }: Produc
             </div>
           </div>
           
-          {/* Tooltip top triangle pointer (Only showing on non-mobile absolute layout) */}
-          {coords.position === 'absolute' && (
+          {/* Tooltip top triangle pointer (Only showing on non-mobile targets with pointer alignment) */}
+          {coords.showPointer && (
             <div 
               className="absolute top-0 -mt-2 -ml-2 w-4 h-4 bg-white border-t border-l border-indigo-100 rotate-45 pointer-events-none" 
               style={{ left: `calc(50% + ${coords.pointerOffset || 0}px)` }}
