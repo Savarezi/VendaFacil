@@ -65,46 +65,44 @@ O VendaFácil foi concebido sob três pilares fundamentais:
 
 ## 📂 Estrutura de Pastas e Componentes
 
-A organização de diretórios do projeto foi padronizada para garantir a separação de responsabilidades (Separation of Concerns) e facilitar a manutenibilidade por times de engenharia experientes:
+A organização de diretórios do projeto foi padronizada para garantir a separação de responsabilidades (Separation of Concerns) e facilitar a manutenibilidade por times de engenharia experientes.
 
-```
-├── 📁 .assets/                      # Arquivos internos e logs do workspace
-├── 📁 src/                          # Diretório raiz com o código-fonte
-│   ├── 📁 components/               # Todos os Módulos de Interface Modularizados
-│   │   ├── 📄 Clientes.tsx          # Gestão de Compradores e Limites de Crédito
-│   │   ├── 📄 Compras.tsx           # Entrada de Notas Fiscais e Reposição
-│   │   ├── 📄 ContasPagar.tsx       # Controle de Compromissos de Despesas
-│   │   ├── 📄 ContasReceber.tsx     # Gerenciamento de Duplicatas de Clientes
-│   │   ├── 📄 CustomChart.tsx       # Componente Corporativo de Gráficos (Baseado em Recharts)
-│   │   ├── 📄 FluxoCaixa.tsx        # Movimentação e Conciliação Financeira Diária
-│   │   ├── 📄 Fornecedores.tsx      # Agenda Comercial de Fabricantes e Parceiros
-│   │   ├── 📄 HistoricoVendas.tsx   # Dashboard de Transações passadas e Re-emissão de Cupons
-│   │   ├── 📄 Login.tsx             # Tela de Autenticação Premium Compacta 100% Viewport
-│   │   ├── 📄 PDV.tsx               # Terminal do Caixa (Carrinho Dinâmico, Atalhos e Pagamentos)
-│   │   ├── 📄 ProductTour.tsx       # Guia Interativo de Onboarding Corporativo de Usuários
-│   │   ├── 📄 Produtos.tsx          # Controle do Catálogo de Produtos e Código EAN
-│   │   └── 📄 Relatorios.tsx        # Painel Centralizado de Business Intelligence e Médias
-│   │
-│   ├── 📁 context/                  # Gerenciamento Global do Estado da Aplicação
-│   │   └── 📄 ErpContext.tsx        # Centralizador da Lógica e Abstração Supabase/Offline
-│   │
-│   ├── 📁 lib/                      # Conectores e Clientes de Infraestrutura Externa
-│   │   └── 📄 supabase.ts           # Inicialização segura do cliente Supabase e Guards de Chaves
-│   │
-│   ├── 📄 App.tsx                   # Hub Central, Controle de Abas e Inicialização de Sessão
-│   ├── 📄 index.css                 # Importação otimizada das diretivas do Tailwind CSS v4
-│   ├── 📄 main.tsx                  # Ponto de entrada de renderização React do Navegador
-│   └── 📄 types.ts                  # Definições Estritas de Tipos TypeScript (Interfaces Globais)
-│
-├── 📄 .env.example                  # Modelo de definições de variáveis de ambiente do sistema
-├── 📄 .gitignore                    # Arquivos e artefatos de build ignorados no repositório
-├── 📄 index.html                    # Esqueleto estático da página HTML principal do SPA
-├── 📄 metadata.json                 # Metadados e permissões da plataforma
-├── 📄 package.json                  # Manifesto de dependências e definições de Scripts NPM
-├── 📄 SUPABASE_SCHEMA.sql           # Arquivo DDL completo para replicação do banco de dados no PostgreSQL
-├── 📄 tsconfig.json                 # Configurações do compilador TypeScript
-└── 📄 vite.config.ts                # Configuração de build, alias e HMR do bundler Vite
-```
+Abaixo está a representação tabular interativa da arquitetura do projeto. Clique em qualquer caminho ou arquivo para abrir diretamente no repositório:
+
+| Caminho do Arquivo / Pasta | Tipo | Descrição e Propósito no ERP |
+| :--- | :---: | :--- |
+| [📂 `.assets/`](./.assets) | Diretório | Arquivos internos, relatórios de auditoria e logs gerenciais do workspace. |
+| [📂 `src/`](./src) | Diretório | Diretório raiz que unifica todo o código-fonte principal da aplicação. |
+|   ├── [📂 `src/components/`](./src/components) | Diretório | Coleção de todos os módulos de interface modularizados e blocos do sistema. |
+|   │   ├── [📄 `Clientes.tsx`](./src/components/Clientes.tsx) | Arquivo | Gestão avançada de clientes, histórico de compras e limites de crédito ativos. |
+|   │   ├── [📄 `Compras.tsx`](./src/components/Compras.tsx) | Arquivo | Mecanismo de entrada de mercadorias, notas fiscais e custos médios ponderados. |
+|   │   ├── [📄 `ContasPagar.tsx`](./src/components/ContasPagar.tsx) | Arquivo | Controle programado de despesas, contas a vencer e calendário fiscal. |
+|   │   ├── [📄 `ContasReceber.tsx`](./src/components/ContasReceber.tsx) | Arquivo | Controle dinâmico de faturamentos de clientes e parcelas pendentes. |
+|   │   ├── [📄 `CustomChart.tsx`](./src/components/CustomChart.tsx) | Arquivo | Motor de gráficos proprietário integrado para análises estatísticas do BI. |
+|   │   ├── [📄 `FluxoCaixa.tsx`](./src/components/FluxoCaixa.tsx) | Arquivo | Consolidação em tempo real de transações de entrada, saída e conciliações. |
+|   │   ├── [📄 `Fornecedores.tsx`](./src/components/Fornecedores.tsx) | Arquivo | Agenda de parceiros, marcas vinculadas e distribuidoras comerciais. |
+|   │   ├── [📄 `HistoricoVendas.tsx`](./src/components/HistoricoVendas.tsx) | Arquivo | Retrospectiva analítica de vendas com emissão de cupons não-fiscais. |
+|   │   ├── [📄 `Login.tsx`](./src/components/Login.tsx) | Arquivo | Portal de autenticação premium em dark mode ultra refinado 100% viewport. |
+|   │   ├── [📄 `PDV.tsx`](./src/components/PDV.tsx) | Arquivo | Terminal rápido de vendas presenciais com carrinho flutuante e atalhos. |
+|   │   ├── [📄 `ProductTour.tsx`](./src/components/ProductTour.tsx) | Arquivo | Assistente inteligente guiado para onboarding inicial integrado do sistema. |
+|   │   ├── [📄 `Produtos.tsx`](./src/components/Produtos.tsx) | Arquivo | Gestão do catálogo fiscal de mercadorias, margens de lucro e código EAN. |
+|   │   └── [📄 `Relatorios.tsx`](./src/components/Relatorios.tsx) | Arquivo | Dashboard centralizado de BI, indicadores de ticket médio e curva ABC. |
+|   ├── [📂 `src/context/`](./src/context) | Diretório | Gerenciamento global de estados corporativos e reatividade. |
+|   │   └── [📄 `ErpContext.tsx`](./src/context/ErpContext.tsx) | Arquivo | Centralizador lógico do estado do ERP com transição de sincronização híbrida. |
+|   ├── [📂 `src/lib/`](./src/lib) | Diretório | Conectores de comunicação e clientes de infraestrutura externos. |
+|   │   └── [📄 `supabase.ts`](./src/lib/supabase.ts) | Arquivo | Inicialização resiliente do cliente Supabase e validação de chaves. |
+|   ├── [📄 `App.tsx`](./src/App.tsx) | Arquivo | Hub estratégico de controle de abas, rotas e inicialização de sessão. |
+|   ├── [📄 `index.css`](./src/index.css) | Arquivo | Diretivas taylor-made, customizações de fontes e regras do Tailwind CSS v4. |
+|   ├── [📄 `main.tsx`](./src/main.tsx) | Arquivo | Ponto de entrada fundamental e inicializador React 19 do DOM do navegador. |
+|   └── [📄 `types.ts`](./src/types.ts) | Arquivo | Centralizador estrito de tipos, payloads de auditoria e interfaces de dados. |
+| [📄 `.env.example`](./.env.example) | Arquivo | Modelo de credenciais e chaves secretas do provedor de dados de nuvem. |
+| [📄 `.gitignore`](./.gitignore) | Arquivo | Regras de ignore do repositório para privacidade técnica de dados locais. |
+| [📄 `index.html`](./index.html) | Arquivo | Template principal e contêiner dinâmico do SPA. |
+| [📄 `metadata.json`](./metadata.json) | Arquivo | Configuração técnica de permissões de hardware e título do aplicativo. |
+| [📄 `package.json`](./package.json) | Arquivo | Manifesto do projeto com todas as dependências e scripts operacionais. |
+| [📄 `SUPABASE_SCHEMA.sql`](./SUPABASE_SCHEMA.sql) | Arquivo | DDL completo do banco para implantação direta do PostgreSQL corporativo. |
+| [📄 `tsconfig.json`](./tsconfig.json) | Arquivo | Configurações estritas do compilador estático de tipagem do TypeScript. |
+| [📄 `vite.config.ts`](./vite.config.ts) | Arquivo | Mapeador de build de produção, alias de caminhos e comportamentos de dev. |
 
 ---
 

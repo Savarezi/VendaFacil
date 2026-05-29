@@ -88,7 +88,12 @@ export const TOUR_STEPS: TourStep[] = [
 
 export default function ProductTour({ activeTab, setActiveTab, onClose }: ProductTourProps) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [coords, setCoords] = useState<{ top: number; left: number; position: 'absolute' | 'fixed' }>({ top: 0, left: 0, position: 'fixed' });
+  const [coords, setCoords] = useState<{ 
+    top: number; 
+    left: number; 
+    position: 'absolute' | 'fixed';
+    pointerOffset?: number;
+  }>({ top: 0, left: 0, position: 'fixed', pointerOffset: 0 });
   const tooltipRef = useRef<HTMLDivElement>(null);
 
   // Load first steps according to current main active tab to stay synced
@@ -116,16 +121,34 @@ export default function ProductTour({ activeTab, setActiveTab, onClose }: Produc
           setCoords({
             top: window.innerHeight - 240,
             left: screenWidth / 2,
-            position: 'fixed'
+            position: 'fixed',
+            pointerOffset: 0
           });
           // Ensure the tab itself is visible by scrolling horizontally
           targetElement.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         } else {
           // Centered below the horizontal nav tab button
+          const originalLeft = rect.left + (rect.width / 2) + window.scrollX;
+          const tooltipWidth = 480;
+          const halfWidth = tooltipWidth / 2;
+          const padding = 16;
+
+          // Clamp coordinates to keep the tooltip fully inside the viewport horizontally
+          const minLeft = halfWidth + padding + window.scrollX;
+          const maxLeft = window.innerWidth - halfWidth - padding + window.scrollX;
+          const clampedLeft = Math.max(minLeft, Math.min(maxLeft, originalLeft));
+
+          // Calculate offset to move the pointer so it still aligns with the target element
+          const rawOffset = originalLeft - clampedLeft;
+          // Limit the shift of the pointer so it does not slide off the tooltip edges
+          const maxPointerShift = halfWidth - 28;
+          const pointerOffset = Math.max(-maxPointerShift, Math.min(maxPointerShift, rawOffset));
+
           setCoords({
             top: rect.bottom + window.scrollY + 12,
-            left: rect.left + (rect.width / 2) + window.scrollX,
-            position: 'absolute'
+            left: clampedLeft,
+            position: 'absolute',
+            pointerOffset
           });
         }
       } else {
@@ -133,7 +156,8 @@ export default function ProductTour({ activeTab, setActiveTab, onClose }: Produc
         setCoords({
           top: window.innerHeight / 2 - 100,
           left: window.innerWidth / 2,
-          position: 'fixed'
+          position: 'fixed',
+          pointerOffset: 0
         });
       }
     };
@@ -268,7 +292,10 @@ export default function ProductTour({ activeTab, setActiveTab, onClose }: Produc
           
           {/* Tooltip top triangle pointer (Only showing on non-mobile absolute layout) */}
           {coords.position === 'absolute' && (
-            <div className="absolute top-0 left-1/2 -mt-2 -ml-2 w-4 h-4 bg-white border-t border-l border-indigo-100 rotate-45 pointer-events-none" />
+            <div 
+              className="absolute top-0 -mt-2 -ml-2 w-4 h-4 bg-white border-t border-l border-indigo-100 rotate-45 pointer-events-none" 
+              style={{ left: `calc(50% + ${coords.pointerOffset || 0}px)` }}
+            />
           )}
 
         </motion.div>
